@@ -2,7 +2,7 @@
   "name": "jyro",
   "displayName": "Jyro Scripting Syntax Highlighting",
   "description": "Syntax highlighting for the Jyro scripting language",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "meschsystems",
   "repository": "https://github.com/meschsystems/Mesch.Jyro.VSCode",
   "engines": {

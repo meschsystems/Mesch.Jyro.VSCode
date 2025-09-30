@@ -2,6 +2,7 @@
   "scopeName": "source.jyro",
   "patterns": [
     { "include": "#comments" },
+    { "include": "#dataKeyword" },
     { "include": "#keywords" },
     { "include": "#types" },
     { "include": "#constants" },
@@ -12,6 +13,11 @@
     "comments": {
       "patterns": [
         { "match": "#.*$", "name": "comment.line.number-sign.jyro" }
+      ]
+    },
+    "dataKeyword": {
+      "patterns": [
+        { "match": "\\bData\\b", "name": "variable.language.data.jyro" }
       ]
     },
     "keywords": {
