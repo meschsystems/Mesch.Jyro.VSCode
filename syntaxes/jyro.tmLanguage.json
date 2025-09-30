@@ -1,0 +1,53 @@
+{
+  "scopeName": "source.jyro",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#keywords" },
+    { "include": "#types" },
+    { "include": "#constants" },
+    { "include": "#numbers" },
+    { "include": "#strings" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        { "match": "#.*$", "name": "comment.line.number-sign.jyro" }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "match": "\\b(var|if|then|else|end|switch|do|case|default|while|foreach|in|return|break|continue)\\b",
+          "name": "keyword.control.jyro"
+        },
+        {
+          "match": "\\b(and|or|not|is)\\b",
+          "name": "keyword.operator.logical.jyro"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "match": "\\b(number|string|boolean|object|array)\\b",
+          "name": "storage.type.jyro"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        { "match": "\\b(true|false|null)\\b", "name": "constant.language.jyro" }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        { "match": "\\b\\d+(\\.\\d+)?\\b", "name": "constant.numeric.jyro" }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        { "match": "\"([^\"\\\\]|\\\\.)*\"", "name": "string.quoted.double.jyro" }
+      ]
+    }
+  }
+}
