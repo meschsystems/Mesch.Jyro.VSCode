@@ -1,0 +1,39 @@
+{
+  "name": "Jyro Theme",
+  "type": "dark",
+  "colors": {},
+  "tokenColors": [
+    {
+      "scope": "comment.line.number-sign.jyro",
+      "settings": { "foreground": "#718096" }
+    },
+    {
+      "scope": "keyword.control.jyro",
+      "settings": { "foreground": "#63B3ED" }
+    },
+    {
+      "scope": "keyword.operator.logical.jyro",
+      "settings": { "foreground": "#63B3ED" }
+    },
+    {
+      "scope": "constant.numeric.jyro",
+      "settings": { "foreground": "#9F7AEA" }
+    },
+    {
+      "scope": "support.function.jyro",
+      "settings": { "foreground": "#4DD0E1" }
+    },
+    {
+      "scope": "variable.language.data.jyro",
+      "settings": { "foreground": "#E2E8F0" }
+    },
+    {
+      "scope": "constant.language.jyro",
+      "settings": { "foreground": "#9F7AEA" }
+    },
+    {
+      "scope": "string.quoted.double.jyro",
+      "settings": { "foreground": "#E2E8F0" }
+    }
+  ]
+}

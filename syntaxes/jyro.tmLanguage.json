@@ -7,7 +7,8 @@
     { "include": "#types" },
     { "include": "#constants" },
     { "include": "#numbers" },
-    { "include": "#strings" }
+    { "include": "#strings" },
+    { "include": "#functions" }
   ],
   "repository": {
     "comments": {
@@ -53,6 +54,11 @@
     "strings": {
       "patterns": [
         { "match": "\"([^\"\\\\]|\\\\.)*\"", "name": "string.quoted.double.jyro" }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        { "match": "\\b[A-Z][A-Za-z0-9_]*\\b", "name": "support.function.jyro" }
       ]
     }
   }

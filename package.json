@@ -2,19 +2,32 @@
   "name": "jyro",
   "displayName": "Jyro Scripting Syntax Highlighting",
   "description": "Syntax highlighting for the Jyro scripting language",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "publisher": "meschsystems",
   "repository": "https://github.com/meschsystems/Mesch.Jyro.VSCode",
   "engines": {
     "vscode": "^1.85.0"
   },
-  "categories": ["Programming Languages"],
+  "categories": [
+    "Programming Languages"
+  ],
+  "tags": [
+    "language",
+    "syntax",
+    "highlighting",
+    "jyro"
+  ],
   "contributes": {
     "languages": [
       {
         "id": "jyro",
-        "aliases": ["Jyro", "jyro"],
-        "extensions": [".jyro"],
+        "aliases": [
+          "Jyro",
+          "jyro"
+        ],
+        "extensions": [
+          ".jyro"
+        ],
         "configuration": "./language-configuration.json"
       }
     ],
@@ -23,6 +36,18 @@
         "language": "jyro",
         "scopeName": "source.jyro",
         "path": "./syntaxes/jyro.tmLanguage.json"
+      }
+    ],
+    "themes": [
+      {
+        "label": "Jyro Theme (Dark)",
+        "uiTheme": "vs-dark",
+        "path": "./themes/jyro-color-theme.json"
+      },
+      {
+        "label": "Jyro Theme (Light)",
+        "uiTheme": "vs",
+        "path": "./themes/jyro-color-theme-light.json"
       }
     ]
   }
