@@ -34,12 +34,6 @@
       }
     },
     {
-      "scope": "support.function.jyro",
-      "settings": {
-        "foreground": "#4DD0E1"
-      }
-    },
-    {
       "scope": "variable.language.data.jyro",
       "settings": {
         "foreground": "#E2E8F0"

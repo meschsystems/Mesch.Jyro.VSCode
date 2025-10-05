@@ -40,12 +40,6 @@
       }
     },
     {
-      "scope": "variable.language.data.jyro",
-      "settings": {
-        "foreground": "#1A202C"
-      }
-    },
-    {
       "scope": "constant.language.jyro",
       "settings": {
         "foreground": "#805AD5"
