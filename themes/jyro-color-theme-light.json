@@ -4,36 +4,58 @@
   "colors": {},
   "tokenColors": [
     {
+      "scope": "variable.language.data.jyro",
+      "settings": {
+        "foreground": "#C05621"
+      }
+    },
+    {
       "scope": "comment.line.number-sign.jyro",
-      "settings": { "foreground": "#4A5568" }
+      "settings": {
+        "foreground": "#4A5568"
+      }
     },
     {
       "scope": "keyword.control.jyro",
-      "settings": { "foreground": "#3182CE" }
+      "settings": {
+        "foreground": "#3182CE"
+      }
     },
     {
       "scope": "keyword.operator.logical.jyro",
-      "settings": { "foreground": "#3182CE" }
+      "settings": {
+        "foreground": "#3182CE"
+      }
     },
     {
       "scope": "constant.numeric.jyro",
-      "settings": { "foreground": "#805AD5" }
+      "settings": {
+        "foreground": "#805AD5"
+      }
     },
     {
       "scope": "support.function.jyro",
-      "settings": { "foreground": "#0CA5A5" }
+      "settings": {
+        "foreground": "#0CA5A5"
+      }
     },
     {
       "scope": "variable.language.data.jyro",
-      "settings": { "foreground": "#1A202C" }
+      "settings": {
+        "foreground": "#1A202C"
+      }
     },
     {
       "scope": "constant.language.jyro",
-      "settings": { "foreground": "#805AD5" }
+      "settings": {
+        "foreground": "#805AD5"
+      }
     },
     {
       "scope": "string.quoted.double.jyro",
-      "settings": { "foreground": "#2D3748" }
+      "settings": {
+        "foreground": "#2D3748"
+      }
     }
   ]
 }
