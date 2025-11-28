@@ -714,8 +714,22 @@ function formatOperators(line: string): string {
 
     // Clean up multiple spaces (but preserve indentation)
     const leadingSpace = result.match(/^(\s*)/)?.[1] || '';
-    const content = result.substring(leadingSpace.length);
-    return leadingSpace + content.replace(/  +/g, ' ').trim();
+    let content = result.substring(leadingSpace.length);
+
+    // Replace multiple spaces with single space
+    content = content.replace(/  +/g, ' ');
+
+    // Remove space between function name and opening paren: SomeFunction ( -> SomeFunction(
+    // But preserve space after control keywords: if (, while (, foreach (, switch (
+    content = content.replace(/\b(\w+)\s+\(/g, (match, word) => {
+        const keywords = ['if', 'while', 'foreach', 'switch'];
+        if (keywords.includes(word)) {
+            return word + ' ('; // Keep single space for keywords
+        }
+        return word + '(';
+    });
+
+    return leadingSpace + content.trim();
 }
 
 // Document formatting handler

@@ -150,16 +150,24 @@ export class DocumentAnalyzer {
             }
 
             // Check for undefined functions (basic check)
-            const funcCallPattern = /\b([A-Z]\w*)\s*\(/g;
-            let match;
-            while ((match = funcCallPattern.exec(trimmed)) !== null) {
-                const funcName = match[1];
+            // PascalCase functions not in stdlib are likely host-provided, so show as Information
+            // Pattern: any PascalCase identifier (starts with uppercase) followed by opening paren
+            const funcCallPattern = /\b([A-Z][a-zA-Z0-9]*)\s*\(/g;
+            let funcMatch;
+            while ((funcMatch = funcCallPattern.exec(trimmed)) !== null) {
+                const funcName = funcMatch[1];
+                // Skip keywords that happen to be PascalCase (like Data)
+                if (this.keywords.includes(funcName)) {
+                    continue;
+                }
                 if (!this.functionNames.includes(funcName)) {
-                    const pos = line.indexOf(funcName);
+                    // Calculate correct position: leading whitespace + match position in trimmed
+                    const leadingWhitespace = line.length - line.trimStart().length;
+                    const pos = leadingWhitespace + funcMatch.index;
                     this.addDiagnostic(
                         lineIndex, pos, lineIndex, pos + funcName.length,
-                        `Undefined function "${funcName}"`,
-                        DiagnosticSeverity.Error
+                        `Referenced function "${funcName}" will need to be made available at runtime`,
+                        DiagnosticSeverity.Information
                     );
                 }
             }
@@ -244,15 +252,23 @@ export class DocumentAnalyzer {
 
             // Find variable usage (simple pattern matching)
             // This is a basic implementation - a full solution would use the parser
-            const varPattern = /\b([a-z_]\w*)\b/gi;
+            const varPattern = /\b([a-zA-Z_]\w*)\b/g;
             let match;
             while ((match = varPattern.exec(lineWithoutComments)) !== null) {
                 const varName = match[1];
                 const pos = match.index;
+                const endPos = pos + varName.length;
 
                 // Skip property access (identifiers after a dot)
                 // In Jyro, any property can be auto-added to objects
                 if (pos > 0 && lineWithoutComments[pos - 1] === '.') {
+                    continue;
+                }
+
+                // Skip function calls (identifier followed by parenthesis)
+                // PascalCase function calls are handled separately with Information severity in checkSyntax
+                const afterIdent = lineWithoutComments.substring(endPos).match(/^\s*\(/);
+                if (afterIdent) {
                     continue;
                 }
 
