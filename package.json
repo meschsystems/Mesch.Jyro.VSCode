@@ -1,22 +1,27 @@
 {
-  "name": "jyro",
-  "displayName": "Jyro Scripting Syntax Highlighting",
-  "description": "Syntax highlighting for the Jyro scripting language",
-  "version": "0.0.7",
+  "name": "jyro-vscode",
+  "displayName": "Jyro",
+  "description": "Full language server support for the Jyro scripting language",
+  "version": "1.0.2",
   "publisher": "meschsystems",
-  "repository": "https://github.com/meschsystems/Mesch.Jyro.VSCode",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meschsystems/JyroVsCodeLanguageServer"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
     "Programming Languages"
   ],
-  "tags": [
-    "language",
-    "syntax",
-    "highlighting",
-    "jyro"
+  "keywords": [
+    "jyro",
+    "language-server",
+    "scripting",
+    "data-transformation"
   ],
+  "main": "./client/out/extension.js",
   "contributes": {
     "languages": [
       {
@@ -38,17 +43,76 @@
         "path": "./syntaxes/jyro.tmLanguage.json"
       }
     ],
-    "themes": [
+    "snippets": [
       {
-        "label": "Jyro Theme (Dark)",
-        "uiTheme": "vs-dark",
-        "path": "./themes/jyro-color-theme.json"
-      },
-      {
-        "label": "Jyro Theme (Light)",
-        "uiTheme": "vs",
-        "path": "./themes/jyro-color-theme-light.json"
+        "language": "jyro",
+        "path": "./snippets/jyro.json"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Jyro Language Server",
+      "properties": {
+        "jyro.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VS Code and the Jyro language server."
+        },
+        "jyro.maxNumberOfProblems": {
+          "scope": "resource",
+          "type": "number",
+          "default": 100,
+          "description": "Controls the maximum number of problems produced by the server."
+        },
+        "jyro.format.indentSize": {
+          "scope": "resource",
+          "type": "number",
+          "default": 4,
+          "description": "Number of spaces for indentation."
+        },
+        "jyro.format.useTabs": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": false,
+          "description": "Use tabs instead of spaces for indentation."
+        }
+      }
+    },
+    "configurationDefaults": {
+      "editor.tokenColorCustomizations": {
+        "textMateRules": [
+          {
+            "scope": "variable.language.data.jyro",
+            "settings": {
+              "foreground": "#F6AD55"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "clean": "rimraf client/out server/out shared/out tsconfig.tsbuildinfo client/tsconfig.tsbuildinfo server/tsconfig.tsbuildinfo shared/tsconfig.tsbuildinfo",
+    "precompile": "npm run clean",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "lint": "eslint ./client/src ./server/src ./shared/src",
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+    "test": "sh ./scripts/e2e.sh"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^20.10.0",
+    "eslint": "^9.0.0",
+    "rimraf": "^6.1.0",
+    "typescript": "^5.3.2",
+    "typescript-eslint": "^8.0.0"
   }
 }

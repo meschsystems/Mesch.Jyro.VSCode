@@ -1,0 +1,13 @@
+node_modules/
+out/
+.vscode-test/
+*.log
+.DS_Store
+client/node_modules/
+server/node_modules/
+shared/node_modules/
+client/out/
+server/out/
+shared/out/
+server/src/parser/generated/
+/.claude

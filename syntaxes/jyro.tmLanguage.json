@@ -1,64 +1,169 @@
 {
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Jyro",
   "scopeName": "source.jyro",
   "patterns": [
     { "include": "#comments" },
-    { "include": "#dataKeyword" },
     { "include": "#keywords" },
-    { "include": "#types" },
+    { "include": "#operators" },
     { "include": "#constants" },
-    { "include": "#numbers" },
     { "include": "#strings" },
-    { "include": "#functions" }
+    { "include": "#numbers" },
+    { "include": "#functions" },
+    { "include": "#data-keyword" },
+    { "include": "#variables" },
+    { "include": "#punctuation" }
   ],
   "repository": {
     "comments": {
       "patterns": [
-        { "match": "#.*$", "name": "comment.line.number-sign.jyro" }
-      ]
-    },
-    "dataKeyword": {
-      "patterns": [
-        { "match": "\\bData\\b", "name": "variable.language.data.jyro" }
+        {
+          "name": "comment.line.number-sign.jyro",
+          "match": "#.*$"
+        }
       ]
     },
     "keywords": {
       "patterns": [
         {
-          "match": "\\b(var|if|then|else|end|switch|do|case|default|while|foreach|in|return|break|continue)\\b",
-          "name": "keyword.control.jyro"
+          "name": "keyword.control.flow.jyro",
+          "match": "\\b(if|then|else|end|while|do|foreach|in|switch|case|default|return|break|continue)\\b"
         },
         {
-          "match": "\\b(and|or|not|is)\\b",
-          "name": "keyword.operator.logical.jyro"
+          "name": "keyword.declaration.jyro",
+          "match": "\\b(var)\\b"
+        },
+        {
+          "name": "keyword.operator.logical.jyro",
+          "match": "\\b(and|or|not|is)\\b"
+        },
+        {
+          "name": "storage.type.jyro",
+          "match": "\\b(number|string|boolean|object|array)\\b"
         }
       ]
     },
-    "types": {
+    "operators": {
       "patterns": [
         {
-          "match": "\\b(number|string|boolean|object|array)\\b",
-          "name": "storage.type.jyro"
+          "name": "keyword.operator.increment.jyro",
+          "match": "\\+\\+|--"
+        },
+        {
+          "name": "keyword.operator.comparison.jyro",
+          "match": "==|!=|<=|>=|<|>"
+        },
+        {
+          "name": "keyword.operator.arithmetic.jyro",
+          "match": "\\+|-|\\*|/|%"
+        },
+        {
+          "name": "keyword.operator.assignment.jyro",
+          "match": "="
+        },
+        {
+          "name": "keyword.operator.ternary.jyro",
+          "match": "\\?|:"
         }
       ]
     },
     "constants": {
       "patterns": [
-        { "match": "\\b(true|false|null)\\b", "name": "constant.language.jyro" }
-      ]
-    },
-    "numbers": {
-      "patterns": [
-        { "match": "\\b\\d+(\\.\\d+)?\\b", "name": "constant.numeric.jyro" }
+        {
+          "name": "constant.language.boolean.jyro",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "constant.language.null.jyro",
+          "match": "\\b(null)\\b"
+        }
       ]
     },
     "strings": {
       "patterns": [
-        { "match": "\"([^\"\\\\]|\\\\.)*\"", "name": "string.quoted.double.jyro" }
+        {
+          "name": "string.quoted.double.jyro",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.jyro",
+              "match": "\\\\(b|t|n|f|r|\"|\\\\|\\/|u[0-9A-Fa-f]{4})"
+            },
+            {
+              "name": "invalid.illegal.unrecognized-escape.jyro",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.decimal.jyro",
+          "match": "\\b\\d+(\\.\\d+)?\\b"
+        }
       ]
     },
     "functions": {
       "patterns": [
-        { "match": "\\b[A-Z][A-Za-z0-9_]*\\b", "name": "support.function.jyro" }
+        {
+          "name": "entity.name.function.jyro",
+          "match": "\\b(Upper|Lower|Trim|Replace|Contains|StartsWith|EndsWith|Split|Join|ToNumber|Length|First|Last|Append|Pop|IndexOf|Insert|RemoveAt|RemoveLast|Clear|Filter|CountIf|Sort|SortByField|Reverse|Min|Max|Sum|Abs|Round|Now|Today|ParseDate|FormatDate|DateAdd|DateDiff|DatePart|TypeOf|IsNull|Exists|Equal|NotEqual|Base64Encode|Base64Decode|NewGuid|CallScript|MergeArrays|InvokeRestMethod)\\b"
+        }
+      ]
+    },
+    "data-keyword": {
+      "patterns": [
+        {
+          "name": "variable.language.data.jyro",
+          "match": "\\bData\\b"
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "variable.other.jyro",
+          "match": "\\b[a-z_][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.definition.parameters.begin.jyro",
+          "match": "\\("
+        },
+        {
+          "name": "punctuation.definition.parameters.end.jyro",
+          "match": "\\)"
+        },
+        {
+          "name": "punctuation.definition.array.begin.jyro",
+          "match": "\\["
+        },
+        {
+          "name": "punctuation.definition.array.end.jyro",
+          "match": "\\]"
+        },
+        {
+          "name": "punctuation.definition.object.begin.jyro",
+          "match": "\\{"
+        },
+        {
+          "name": "punctuation.definition.object.end.jyro",
+          "match": "\\}"
+        },
+        {
+          "name": "punctuation.separator.comma.jyro",
+          "match": ","
+        },
+        {
+          "name": "punctuation.accessor.jyro",
+          "match": "\\."
+        }
       ]
     }
   }

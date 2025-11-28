@@ -1,0 +1,114 @@
+# Jyro Language Example
+# This file demonstrates the syntax and features of the Jyro language
+
+# ===== Variable Declarations =====
+var userName = Data.name
+var userAge : number = Data.age
+var userEmail : string = Data.email
+var isActive : boolean = true
+
+# ===== Conditional Logic =====
+if userAge >= 18 then
+    Data.status = "Adult"
+    Data.canVote = true
+else
+    Data.status = "Minor"
+    Data.canVote = false
+end
+
+# ===== String Operations =====
+var fullName = Upper(Data.firstName) + " " + Upper(Data.lastName)
+var nameParts = Split(fullName, " ")
+var trimmedEmail = Trim(Lower(userEmail))
+
+if Contains(trimmedEmail, "@") then
+    Data.emailValid = true
+else
+    Data.emailValid = false
+end
+
+# ===== Array Manipulation =====
+var items = Data.items
+var activeItems = Filter(items, "active", "==", true)
+var sortedItems = SortByField(activeItems, "priority", "desc")
+var itemCount = Length(sortedItems)
+
+# ===== Loops =====
+var total = 0
+foreach item in items do
+    total = total + item.price
+
+    if item.price > 100 then
+        item.expensive = true
+    else
+        item.expensive = false
+    end
+end
+Data.total = total
+
+# ===== While Loop Example =====
+var count = 0
+while count < 10 do
+    count = count + 1
+end
+Data.loopCount = count
+
+# ===== Switch Statement =====
+switch Data.category do
+    case "electronics" then
+        Data.tax = 0.15
+    case "food" then
+        Data.tax = 0.05
+    case "clothing" then
+        Data.tax = 0.10
+    default then
+        Data.tax = 0.08
+end
+
+# ===== Date/Time Operations =====
+var currentTime = Now()
+var today = Today()
+var futureDate = DateAdd(today, "days", 30)
+var daysDiff = DateDiff(futureDate, today, "days")
+
+# ===== Math Operations =====
+var minValue = Min(10, 20)
+var maxValue = Max(10, 20)
+var roundedValue = Round(3.14159, 2)
+var absoluteValue = Abs(-42)
+
+# ===== Type Checking =====
+var valueType = TypeOf(Data.value)
+var hasValue = Exists(Data.value)
+var isNullValue = IsNull(Data.value)
+
+# ===== Ternary Operator =====
+Data.discount = Data.isPremium ? 0.20 : 0.10
+Data.shipping = total > 50 ? 0 : 5.99
+
+# ===== Complex Object Manipulation =====
+var user = {
+    "id": 1,
+    "name": fullName,
+    "email": trimmedEmail,
+    "age": userAge,
+    "active": isActive
+}
+
+# ===== Array Literal =====
+var numbers = [1, 2, 3, 4, 5]
+var mixed = [42, "hello", true, null, { "key": "value" }]
+
+# ===== Advanced Array Operations =====
+Append(numbers, 6)
+var lastNumber = Pop(numbers)
+var firstNumber = First(numbers)
+var reversedNumbers = Reverse(numbers)
+
+# ===== Final Data Assignment =====
+Data.result = {
+    "user": user,
+    "total": total,
+    "itemCount": itemCount,
+    "processedAt": currentTime
+}

@@ -1,0 +1,17 @@
+.vscode/**
+.vscode-test/**
+client/src/**
+client/tsconfig.json
+server/src/**
+server/tsconfig.json
+server/src/parser/Jyro.g4
+shared/src/**
+shared/tsconfig.json
+**/*.ts
+**/*.map
+.gitignore
+tsconfig.json
+node_modules/**
+shared/node_modules/**
+*.vsix
+example.jyro

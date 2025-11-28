@@ -12,5 +12,35 @@
     { "open": "[", "close": "]" },
     { "open": "(", "close": ")" },
     { "open": "\"", "close": "\"", "notIn": ["string"] }
+  ],
+  "surroundingPairs": [
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"],
+    ["\"", "\""]
+  ],
+  "folding": {
+    "markers": {
+      "start": "^\\s*(if|while|foreach|switch)\\b",
+      "end": "^\\s*end\\b"
+    }
+  },
+  "indentationRules": {
+    "increaseIndentPattern": "^\\s*(if|then|else|while|foreach|switch|case|default)\\s*(do|then)?\\s*$",
+    "decreaseIndentPattern": "^\\s*(end|else|case|default)\\b"
+  },
+  "onEnterRules": [
+    {
+      "beforeText": "^\\s*(if|while|foreach|switch)\\s+.*\\s+(then|do)\\s*$",
+      "action": {
+        "indent": "indent"
+      }
+    },
+    {
+      "beforeText": "^\\s*(else|case|default)\\s*.*$",
+      "action": {
+        "indent": "indent"
+      }
+    }
   ]
 }
