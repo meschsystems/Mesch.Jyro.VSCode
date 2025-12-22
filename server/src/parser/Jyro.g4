@@ -16,6 +16,7 @@ statement
  | whileStmt
  | forEachStmt
  | returnStmt
+ | failStmt
  | breakStmt
  | continueStmt
  | incDecStmt
@@ -66,7 +67,11 @@ forEachStmt
  ;
 
 returnStmt
- : RETURN
+ : RETURN expression?
+ ;
+
+failStmt
+ : FAIL expression?
  ;
 
 breakStmt
@@ -203,6 +208,7 @@ WHILE : 'while';
 FOREACH : 'foreach';
 IN : 'in';
 RETURN : 'return';
+FAIL : 'fail';
 BREAK : 'break';
 CONTINUE : 'continue';
 

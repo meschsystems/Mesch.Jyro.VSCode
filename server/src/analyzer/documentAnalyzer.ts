@@ -23,7 +23,7 @@ export class DocumentAnalyzer {
     // Keywords and tokens
     private readonly keywords = [
         'var', 'if', 'then', 'else', 'end', 'switch', 'do', 'case', 'default',
-        'while', 'foreach', 'in', 'return', 'break', 'continue',
+        'while', 'foreach', 'in', 'return', 'fail', 'break', 'continue',
         'true', 'false', 'null', 'and', 'or', 'not', 'is', 'Data'
     ];
 

@@ -193,7 +193,7 @@ connection.onCompletion(
         // Keywords
         const keywords = [
             'var', 'if', 'then', 'else', 'end', 'switch', 'do', 'case', 'default',
-            'while', 'foreach', 'in', 'return', 'break', 'continue',
+            'while', 'foreach', 'in', 'return', 'fail', 'break', 'continue',
             'true', 'false', 'null', 'and', 'or', 'not', 'is'
         ];
 
@@ -337,7 +337,8 @@ connection.onHover((params: HoverParams): Hover | null => {
         { word: 'default', desc: 'Default case in switch statement' },
         { word: 'break', desc: 'Exits the current loop' },
         { word: 'continue', desc: 'Skips to the next iteration of the loop' },
-        { word: 'return', desc: 'Returns a value from the script' },
+        { word: 'return', desc: 'Returns from the script with an optional value' },
+        { word: 'fail', desc: 'Terminates script execution with an error. Can include an optional message.' },
         { word: 'Data', desc: 'The shared data context between the script and its host' }
     ];
 
@@ -602,7 +603,7 @@ function splitOnKeywords(line: string): string[] {
             const remaining = trimmed.slice(i);
 
             // Split on statement-starting keywords
-            const statementMatch = remaining.match(/^(var|if|while|foreach|switch|return|break|continue)\b/i);
+            const statementMatch = remaining.match(/^(var|if|while|foreach|switch|return|fail|break|continue)\b/i);
             if (statementMatch && current.trim() !== '') {
                 // Don't split "else if" - keep them together as a single construct
                 const isElseIf = statementMatch[1].toLowerCase() === 'if' && /\belse\s*$/i.test(current);

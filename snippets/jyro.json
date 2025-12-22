@@ -226,5 +226,33 @@
       "Exists(${1:value})"
     ],
     "description": "Check if value is not null"
+  },
+  "Return": {
+    "prefix": "return",
+    "body": [
+      "return"
+    ],
+    "description": "Return from the script"
+  },
+  "Return with Value": {
+    "prefix": "returnm",
+    "body": [
+      "return ${1:value}"
+    ],
+    "description": "Return from the script with a value"
+  },
+  "Fail": {
+    "prefix": "fail",
+    "body": [
+      "fail"
+    ],
+    "description": "Fail script execution"
+  },
+  "Fail with Message": {
+    "prefix": "failm",
+    "body": [
+      "fail \"${1:error message}\""
+    ],
+    "description": "Fail script execution with an error message"
   }
 }
