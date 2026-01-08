@@ -82,6 +82,9 @@ export class DocumentAnalyzer {
                 return;
             }
 
+            // Remove string literals for keyword detection to avoid false positives
+            const trimmedWithoutStrings = trimmed.replace(/"[^"]*"/g, '""');
+
             // Check for unclosed strings
             const stringMatches = line.match(/"/g);
             if (stringMatches && stringMatches.length % 2 !== 0) {
@@ -102,8 +105,8 @@ export class DocumentAnalyzer {
 
             // Check block structure
             // Don't count "else if" as a new block - it's part of an existing if
-            if (/\b(if|while|foreach|switch)\b/.test(trimmed) && !/\belse\s+if\b/.test(trimmed)) {
-                const match = trimmed.match(/\b(if|while|foreach|switch)\b/);
+            if (/\b(if|while|foreach|switch)\b/.test(trimmedWithoutStrings) && !/\belse\s+if\b/.test(trimmedWithoutStrings)) {
+                const match = trimmedWithoutStrings.match(/\b(if|while|foreach|switch)\b/);
                 if (match) {
                     blockStack.push({ type: match[1], line: lineIndex });
                     if (match[1] === 'while' || match[1] === 'foreach') {
@@ -112,7 +115,7 @@ export class DocumentAnalyzer {
                 }
             }
 
-            if (/\bend\b/.test(trimmed)) {
+            if (/\bend\b/.test(trimmedWithoutStrings)) {
                 if (blockStack.length === 0) {
                     this.addDiagnostic(
                         lineIndex, 0, lineIndex, trimmed.length,
@@ -128,10 +131,10 @@ export class DocumentAnalyzer {
             }
 
             // Check for break/continue outside loops
-            if (/\b(break|continue)\b/.test(trimmed) && inLoop === 0) {
+            if (/\b(break|continue)\b/.test(trimmedWithoutStrings) && inLoop === 0) {
                 this.addDiagnostic(
                     lineIndex, 0, lineIndex, trimmed.length,
-                    `"${trimmed.includes('break') ? 'break' : 'continue'}" can only be used inside loops`,
+                    `"${trimmedWithoutStrings.includes('break') ? 'break' : 'continue'}" can only be used inside loops`,
                     DiagnosticSeverity.Error
                 );
             }
@@ -158,12 +161,10 @@ export class DocumentAnalyzer {
             // Check for undefined functions (basic check)
             // PascalCase functions not in stdlib are likely host-provided, so show as Information
             // Pattern: any PascalCase identifier (starts with uppercase) followed by opening paren
-            // First, remove string literals to avoid false positives for function names in strings
             if (this.options.warnOnHostFunctions) {
-                const lineWithoutStrings = trimmed.replace(/"[^"]*"/g, '""');
                 const funcCallPattern = /\b([A-Z][a-zA-Z0-9]*)\s*\(/g;
                 let funcMatch;
-                while ((funcMatch = funcCallPattern.exec(lineWithoutStrings)) !== null) {
+                while ((funcMatch = funcCallPattern.exec(trimmedWithoutStrings)) !== null) {
                     const funcName = funcMatch[1];
                     // Skip keywords that happen to be PascalCase (like Data)
                     if (this.keywords.includes(funcName)) {
