@@ -81,6 +81,12 @@
           "type": "boolean",
           "default": false,
           "description": "Use tabs instead of spaces for indentation."
+        },
+        "jyro.warnOnHostFunctions": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": true,
+          "description": "Show informational messages when non-standard host functions are referenced."
         }
       }
     },

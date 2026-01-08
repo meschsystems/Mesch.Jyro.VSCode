@@ -43,6 +43,7 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 // Settings interface
 interface JyroSettings {
     maxNumberOfProblems: number;
+    warnOnHostFunctions: boolean;
     trace: {
         server: string;
     };
@@ -51,6 +52,7 @@ interface JyroSettings {
 // Default settings
 const defaultSettings: JyroSettings = {
     maxNumberOfProblems: 100,
+    warnOnHostFunctions: true,
     trace: { server: 'off' }
 };
 let globalSettings: JyroSettings = defaultSettings;
@@ -162,7 +164,9 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     const settings = await getDocumentSettings(textDocument.uri);
     const text = textDocument.getText();
 
-    const analyzer = new DocumentAnalyzer(text, textDocument.uri);
+    const analyzer = new DocumentAnalyzer(text, textDocument.uri, {
+        warnOnHostFunctions: settings.warnOnHostFunctions
+    });
     const diagnostics = analyzer.analyze();
 
     // Limit the number of problems

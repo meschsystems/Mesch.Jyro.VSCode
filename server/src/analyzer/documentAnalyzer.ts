@@ -13,12 +13,17 @@ export interface SymbolInfo {
     character: number;
 }
 
+export interface AnalyzerOptions {
+    warnOnHostFunctions: boolean;
+}
+
 export class DocumentAnalyzer {
     private text: string;
     private uri: string;
     private lines: string[];
     private diagnostics: Diagnostic[] = [];
     private symbols: SymbolInfo[] = [];
+    private options: AnalyzerOptions;
 
     // Keywords and tokens
     private readonly keywords = [
@@ -30,9 +35,10 @@ export class DocumentAnalyzer {
     private readonly typeKeywords = ['number', 'string', 'boolean', 'object', 'array'];
     private readonly functionNames = getAllFunctionNames();
 
-    constructor(text: string, uri: string) {
+    constructor(text: string, uri: string, options: AnalyzerOptions = { warnOnHostFunctions: true }) {
         this.text = text;
         this.uri = uri;
+        this.options = options;
         // Split on \n and remove any trailing \r (Windows line endings)
         this.lines = text.split('\n').map(line => line.replace(/\r$/, ''));
     }
@@ -152,23 +158,27 @@ export class DocumentAnalyzer {
             // Check for undefined functions (basic check)
             // PascalCase functions not in stdlib are likely host-provided, so show as Information
             // Pattern: any PascalCase identifier (starts with uppercase) followed by opening paren
-            const funcCallPattern = /\b([A-Z][a-zA-Z0-9]*)\s*\(/g;
-            let funcMatch;
-            while ((funcMatch = funcCallPattern.exec(trimmed)) !== null) {
-                const funcName = funcMatch[1];
-                // Skip keywords that happen to be PascalCase (like Data)
-                if (this.keywords.includes(funcName)) {
-                    continue;
-                }
-                if (!this.functionNames.includes(funcName)) {
-                    // Calculate correct position: leading whitespace + match position in trimmed
-                    const leadingWhitespace = line.length - line.trimStart().length;
-                    const pos = leadingWhitespace + funcMatch.index;
-                    this.addDiagnostic(
-                        lineIndex, pos, lineIndex, pos + funcName.length,
-                        `Referenced function "${funcName}" will need to be made available at runtime`,
-                        DiagnosticSeverity.Information
-                    );
+            // First, remove string literals to avoid false positives for function names in strings
+            if (this.options.warnOnHostFunctions) {
+                const lineWithoutStrings = trimmed.replace(/"[^"]*"/g, '""');
+                const funcCallPattern = /\b([A-Z][a-zA-Z0-9]*)\s*\(/g;
+                let funcMatch;
+                while ((funcMatch = funcCallPattern.exec(lineWithoutStrings)) !== null) {
+                    const funcName = funcMatch[1];
+                    // Skip keywords that happen to be PascalCase (like Data)
+                    if (this.keywords.includes(funcName)) {
+                        continue;
+                    }
+                    if (!this.functionNames.includes(funcName)) {
+                        // Calculate correct position: leading whitespace + match position in trimmed
+                        const leadingWhitespace = line.length - line.trimStart().length;
+                        const pos = leadingWhitespace + funcMatch.index;
+                        this.addDiagnostic(
+                            lineIndex, pos, lineIndex, pos + funcName.length,
+                            `Referenced function "${funcName}" will need to be made available at runtime`,
+                            DiagnosticSeverity.Information
+                        );
+                    }
                 }
             }
         });
