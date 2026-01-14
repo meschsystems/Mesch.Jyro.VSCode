@@ -199,6 +199,8 @@ export class DocumentAnalyzer {
      * Extract variable declarations and other symbols
      */
     private extractSymbols(): void {
+        const seenProps = new Set<string>();  // Track property assignments across entire document
+
         this.lines.forEach((line, lineIndex) => {
             const trimmed = line.trim();
 
@@ -235,6 +237,27 @@ export class DocumentAnalyzer {
                     line: lineIndex,
                     character: pos
                 });
+            }
+
+            // Extract property assignments (first assignment is the definition)
+            // Pattern: identifier.property = (captures the full path like Data.orders)
+            const propAssignPattern = /\b([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)+)\s*=/g;
+            let propMatch;
+            while ((propMatch = propAssignPattern.exec(trimmed)) !== null) {
+                const propPath = propMatch[1];  // e.g., "Data.orders"
+
+                // Only track first assignment as the definition
+                if (!seenProps.has(propPath)) {
+                    seenProps.add(propPath);
+                    const pos = line.indexOf(propPath);
+
+                    this.symbols.push({
+                        name: propPath,
+                        type: 'property',
+                        line: lineIndex,
+                        character: pos
+                    });
+                }
             }
         });
     }

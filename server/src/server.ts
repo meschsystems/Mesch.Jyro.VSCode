@@ -423,6 +423,43 @@ connection.onSignatureHelp((params: SignatureHelpParams): SignatureHelp | null =
     };
 });
 
+// Definition provider - Go to Definition (Ctrl+Click)
+connection.onDefinition((params: DefinitionParams): Definition | null => {
+    const document = documents.get(params.textDocument.uri);
+    if (!document) {
+        return null;
+    }
+
+    const text = document.getText();
+
+    // Get the dotted path at cursor (e.g., Data.orders)
+    const dottedPath = getDottedPathAtPosition(document, params.position);
+    if (!dottedPath) {
+        return null;
+    }
+
+    const analyzer = new DocumentAnalyzer(text, params.textDocument.uri);
+    const symbols = analyzer.getSymbols();
+
+    // Find the symbol definition (try full path first, then just the word)
+    let symbol = symbols.find(s => s.name === dottedPath.fullPath);
+    if (!symbol) {
+        symbol = symbols.find(s => s.name === dottedPath.word);
+    }
+
+    if (symbol) {
+        return {
+            uri: params.textDocument.uri,
+            range: {
+                start: { line: symbol.line, character: symbol.character },
+                end: { line: symbol.line, character: symbol.character + symbol.name.length }
+            }
+        };
+    }
+
+    return null;
+});
+
 // Helper function to get word range at position
 function getWordRangeAtPosition(document: TextDocument, position: { line: number; character: number }) {
     const text = document.getText();
@@ -447,6 +484,58 @@ function getWordRangeAtPosition(document: TextDocument, position: { line: number
         start: document.positionAt(start),
         end: document.positionAt(end)
     };
+}
+
+// Helper function to get dotted path at position (e.g., Data.orders)
+function getDottedPathAtPosition(document: TextDocument, position: { line: number; character: number }): { word: string; fullPath: string } | null {
+    const text = document.getText();
+    const lines = text.split('\n');
+    if (position.line >= lines.length) {
+        return null;
+    }
+
+    const line = lines[position.line];
+    const char = position.character;
+
+    // Find word boundaries (alphanumeric + underscore)
+    let wordStart = char;
+    let wordEnd = char;
+    while (wordStart > 0 && /\w/.test(line[wordStart - 1])) {
+        wordStart--;
+    }
+    while (wordEnd < line.length && /\w/.test(line[wordEnd])) {
+        wordEnd++;
+    }
+
+    if (wordStart === wordEnd) {
+        return null;
+    }
+
+    const word = line.substring(wordStart, wordEnd);
+
+    // Extend to capture full dotted path (e.g., Data.orders.items)
+    let pathStart = wordStart;
+    let pathEnd = wordEnd;
+
+    // Look backwards for dots and identifiers
+    while (pathStart > 1 && line[pathStart - 1] === '.' && /\w/.test(line[pathStart - 2])) {
+        pathStart -= 2;
+        while (pathStart > 0 && /\w/.test(line[pathStart - 1])) {
+            pathStart--;
+        }
+    }
+
+    // Look forwards for dots and identifiers
+    while (pathEnd < line.length - 1 && line[pathEnd] === '.' && /\w/.test(line[pathEnd + 1])) {
+        pathEnd++;
+        while (pathEnd < line.length && /\w/.test(line[pathEnd])) {
+            pathEnd++;
+        }
+    }
+
+    const fullPath = line.substring(pathStart, pathEnd);
+
+    return { word, fullPath };
 }
 
 // Document formatting
