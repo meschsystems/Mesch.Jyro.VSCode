@@ -21,7 +21,7 @@
     "scripting",
     "data-transformation"
   ],
-  "main": "./client/out/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "languages": [
       {
@@ -104,11 +104,14 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "clean": "rimraf client/out server/out shared/out tsconfig.tsbuildinfo client/tsconfig.tsbuildinfo server/tsconfig.tsbuildinfo shared/tsconfig.tsbuildinfo",
+    "vscode:prepublish": "npm run package",
+    "clean": "rimraf dist client/out server/out shared/out tsconfig.tsbuildinfo client/tsconfig.tsbuildinfo server/tsconfig.tsbuildinfo shared/tsconfig.tsbuildinfo",
     "precompile": "npm run clean",
     "compile": "tsc -b",
-    "watch": "tsc -b -w",
+    "compile:esbuild": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "watch:tsc": "tsc -b -w",
+    "package": "npm run clean && npm run compile && node esbuild.js --production",
     "lint": "eslint ./client/src ./server/src ./shared/src",
     "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
     "test": "sh ./scripts/e2e.sh"
@@ -116,6 +119,7 @@
   "devDependencies": {
     "@eslint/js": "^9.0.0",
     "@types/node": "^20.10.0",
+    "esbuild": "^0.24.2",
     "eslint": "^9.0.0",
     "rimraf": "^6.1.0",
     "typescript": "^5.3.2",

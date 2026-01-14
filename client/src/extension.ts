@@ -16,9 +16,9 @@ import {
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-    // The server is implemented in node
+    // The server is implemented in node (bundled with esbuild)
     const serverModule = context.asAbsolutePath(
-        path.join('server', 'out', 'server.js')
+        path.join('dist', 'server.js')
     );
 
     // The debug options for the server
