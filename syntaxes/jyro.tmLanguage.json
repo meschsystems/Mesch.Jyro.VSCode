@@ -27,7 +27,7 @@
       "patterns": [
         {
           "name": "keyword.control.flow.jyro",
-          "match": "\\b(if|then|else|end|while|do|foreach|in|switch|case|default|return|fail|break|continue)\\b"
+          "match": "(?<!\\.)\\b(if|then|else|end|while|do|foreach|in|switch|case|default|return|fail|break|continue)\\b"
         },
         {
           "name": "keyword.declaration.jyro",
@@ -35,11 +35,11 @@
         },
         {
           "name": "keyword.operator.logical.jyro",
-          "match": "\\b(and|or|not|is)\\b"
+          "match": "(?<!\\.)\\b(and|or|not|is)\\b"
         },
         {
           "name": "storage.type.jyro",
-          "match": "\\b(number|string|boolean|object|array)\\b"
+          "match": "(?<!\\.)\\b(number|string|boolean|object|array)\\b"
         }
       ]
     },
@@ -71,11 +71,11 @@
       "patterns": [
         {
           "name": "constant.language.boolean.jyro",
-          "match": "\\b(true|false)\\b"
+          "match": "(?<!\\.)\\b(true|false)\\b"
         },
         {
           "name": "constant.language.null.jyro",
-          "match": "\\b(null)\\b"
+          "match": "(?<!\\.)\\b(null)\\b"
         }
       ]
     },
