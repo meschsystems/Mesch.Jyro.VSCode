@@ -46,6 +46,14 @@
     ],
     "description": "If-else-if statement"
   },
+  "Elseif Clause": {
+    "prefix": "elseif",
+    "body": [
+      "elseif ${1:condition} then",
+      "\t$0"
+    ],
+    "description": "Elseif clause for existing if statement"
+  },
   "While Loop": {
     "prefix": "while",
     "body": [
