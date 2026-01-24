@@ -82,8 +82,9 @@ export class DocumentAnalyzer {
                 return;
             }
 
-            // Remove string literals for keyword detection to avoid false positives
-            const trimmedWithoutStrings = trimmed.replace(/"[^"]*"/g, '""');
+            // Remove comments and string literals for keyword detection to avoid false positives
+            const withoutComments = trimmed.replace(/#.*$/, '');
+            const trimmedWithoutStrings = withoutComments.replace(/"[^"]*"/g, '""');
 
             // Check for unclosed strings
             const stringMatches = line.match(/"/g);
