@@ -27,7 +27,7 @@ export class DocumentAnalyzer {
 
     // Keywords and tokens
     private readonly keywords = [
-        'var', 'if', 'then', 'else', 'end', 'switch', 'do', 'case', 'default',
+        'var', 'if', 'then', 'else', 'elseif', 'end', 'switch', 'do', 'case', 'default',
         'while', 'foreach', 'in', 'return', 'fail', 'break', 'continue',
         'true', 'false', 'null', 'and', 'or', 'not', 'is', 'Data'
     ];
@@ -103,9 +103,8 @@ export class DocumentAnalyzer {
             const openBracket = (line.match(/\[/g) || []).length;
             const closeBracket = (line.match(/\]/g) || []).length;
 
-            // Check block structure
-            // Don't count "else if" as a new block - it's part of an existing if
-            if (/\b(if|while|foreach|switch)\b/.test(trimmedWithoutStrings) && !/\belse\s+if\b/.test(trimmedWithoutStrings)) {
+            // Check block structure (elseif is a continuation, not a new block)
+            if (/\b(if|while|foreach|switch)\b/.test(trimmedWithoutStrings)) {
                 const match = trimmedWithoutStrings.match(/\b(if|while|foreach|switch)\b/);
                 if (match) {
                     blockStack.push({ type: match[1], line: lineIndex });

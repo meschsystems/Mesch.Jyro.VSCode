@@ -196,7 +196,7 @@ connection.onCompletion(
 
         // Keywords
         const keywords = [
-            'var', 'if', 'then', 'else', 'end', 'switch', 'do', 'case', 'default',
+            'var', 'if', 'then', 'else', 'elseif', 'end', 'switch', 'do', 'case', 'default',
             'while', 'foreach', 'in', 'return', 'fail', 'break', 'continue',
             'true', 'false', 'null', 'and', 'or', 'not', 'is'
         ];
@@ -331,6 +331,7 @@ connection.onHover((params: HoverParams): Hover | null => {
         { word: 'if', desc: 'Conditional statement' },
         { word: 'then', desc: 'Used after condition in if/case statements' },
         { word: 'else', desc: 'Alternative branch in conditional' },
+        { word: 'elseif', desc: 'Alternative conditional branch (else if combined)' },
         { word: 'end', desc: 'Ends a block (if/while/foreach/switch)' },
         { word: 'while', desc: 'While loop statement' },
         { word: 'do', desc: 'Marks the start of a loop body (while/foreach)' },
@@ -547,7 +548,7 @@ function formatJyroDocument(text: string, options: { tabSize: number; insertSpac
 
     // Keywords that increase indent after the line
     const indentIncreaseAfter = /^(if|while|foreach|switch)\b/;
-    const blockContinue = /^(else|case|default)\b/;
+    const blockContinue = /^(else|elseif|case|default)\b/;
     const blockEnd = /^end\b/;
     const thenOrDo = /\b(then|do)\b/;
     const hasEndOnLine = /\bend\b/;
@@ -584,7 +585,7 @@ function formatJyroDocument(text: string, options: { tabSize: number; insertSpac
         // Check if this line is self-contained (has 'end' on the same line)
         const isSelfContained = hasEndOnLine.test(trimmedLower) && !blockEnd.test(trimmedLower);
 
-        // Decrease indent before 'end', 'else', 'case', 'default'
+        // Decrease indent before 'end', 'else', 'elseif', 'case', 'default'
         if (blockEnd.test(trimmedLower) || blockContinue.test(trimmedLower)) {
             currentIndent = Math.max(0, currentIndent - 1);
         }
@@ -599,19 +600,8 @@ function formatJyroDocument(text: string, options: { tabSize: number; insertSpac
         formattedLines.push(indentedLine);
 
         // Increase indent after block-starting keywords with 'then' or 'do'
-        // or after 'else', 'case', 'default'
-        // Check for "else if" - special handling needed
-        const isElseIf = /^else\s+if\b/.test(trimmedLower) && thenOrDo.test(trimmedLower);
-
-        if (isElseIf) {
-            if (isSelfContained) {
-                // "else if ... end" on one line: only increase for else (nested if is closed)
-                currentIndent++;
-            } else {
-                // "else if ... then" opens two levels: else continuation + nested if
-                currentIndent += 2;
-            }
-        } else if (!isSelfContained) {
+        // or after 'else', 'elseif', 'case', 'default'
+        if (!isSelfContained) {
             if ((indentIncreaseAfter.test(trimmedLower) && thenOrDo.test(trimmedLower)) ||
                 blockContinue.test(trimmedLower)) {
                 currentIndent++;
@@ -662,9 +652,9 @@ function splitOnKeywords(line: string): string[] {
 
     const trimmedLower = trimmed.toLowerCase();
 
-    // Check if this is a self-contained block (e.g., "else if x then y end")
+    // Check if this is a self-contained block (e.g., "if x then y end")
     // These should NOT be split - they're intentionally on one line
-    const isSelfContainedBlock = /^(if|while|foreach|switch|else|case|default)\b/.test(trimmedLower) &&
+    const isSelfContainedBlock = /^(if|while|foreach|switch|else|elseif|case|default)\b/.test(trimmedLower) &&
         /\b(then|do)\b/.test(trimmedLower) &&
         /\bend\s*$/.test(trimmedLower);
 
@@ -696,14 +686,10 @@ function splitOnKeywords(line: string): string[] {
             const remaining = trimmed.slice(i);
 
             // Split on statement-starting keywords
-            const statementMatch = remaining.match(/^(var|if|while|foreach|switch|return|fail|break|continue)\b/i);
+            const statementMatch = remaining.match(/^(var|if|elseif|while|foreach|switch|return|fail|break|continue)\b/i);
             if (statementMatch && current.trim() !== '') {
-                // Don't split "else if" - keep them together as a single construct
-                const isElseIf = statementMatch[1].toLowerCase() === 'if' && /\belse\s*$/i.test(current);
-                if (!isElseIf) {
-                    result.push(current.trim());
-                    current = '';
-                }
+                result.push(current.trim());
+                current = '';
             }
 
             // Also split on 'end' if this is NOT a self-contained block

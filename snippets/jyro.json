@@ -38,7 +38,7 @@
     "body": [
       "if ${1:condition1} then",
       "\t${2:# first branch}",
-      "else if ${3:condition2} then",
+      "elseif ${3:condition2} then",
       "\t${4:# second branch}",
       "else",
       "\t${5:# default branch}",

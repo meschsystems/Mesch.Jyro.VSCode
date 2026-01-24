@@ -27,7 +27,7 @@
       "patterns": [
         {
           "name": "keyword.control.flow.jyro",
-          "match": "(?<!\\.)\\b(if|then|else|end|while|do|foreach|in|switch|case|default|return|fail|break|continue)\\b"
+          "match": "(?<!\\.)\\b(if|then|else|elseif|end|while|do|foreach|in|switch|case|default|return|fail|break|continue)\\b"
         },
         {
           "name": "keyword.declaration.jyro",
