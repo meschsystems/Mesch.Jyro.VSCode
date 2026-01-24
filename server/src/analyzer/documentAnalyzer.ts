@@ -104,7 +104,8 @@ export class DocumentAnalyzer {
             const closeBracket = (line.match(/\]/g) || []).length;
 
             // Check block structure (elseif is a continuation, not a new block)
-            if (/\b(if|while|foreach|switch)\b/.test(trimmedWithoutStrings)) {
+            const startsWithElseif = /^\s*elseif\b/i.test(trimmed);
+            if (!startsWithElseif && /\b(if|while|foreach|switch)\b/.test(trimmedWithoutStrings)) {
                 const match = trimmedWithoutStrings.match(/\b(if|while|foreach|switch)\b/);
                 if (match) {
                     blockStack.push({ type: match[1], line: lineIndex });
