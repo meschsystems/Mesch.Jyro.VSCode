@@ -133,7 +133,7 @@
   "Date Add": {
     "prefix": "dateadd",
     "body": [
-      "DateAdd(${1:date}, \"${2|days,weeks,months,years,hours,minutes,seconds|}\", ${3:amount})"
+      "DateAdd(${1:date}, ${2:amount}, \"${3|days,weeks,months,years,hours,minutes,seconds|}\")"
     ],
     "description": "Add time to a date"
   },

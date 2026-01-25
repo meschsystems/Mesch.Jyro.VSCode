@@ -1,6 +1,6 @@
 /**
  * Jyro Standard Library Function Registry
- * Contains all 54 built-in functions with their signatures and documentation
+ * Contains all 57 built-in functions with their signatures and documentation
  */
 
 import { JyroType } from './types';
@@ -201,12 +201,12 @@ export const STDLIB_FUNCTIONS: FunctionSignature[] = [
         name: 'IndexOf',
         category: 'Array',
         parameters: [
-            { name: 'arr', type: JyroType.Array, description: 'The array to search' },
-            { name: 'value', type: [JyroType.Null, JyroType.Number, JyroType.String, JyroType.Boolean, JyroType.Object, JyroType.Array], description: 'The value to find' }
+            { name: 'source', type: [JyroType.String, JyroType.Array], description: 'The string or array to search' },
+            { name: 'search', type: [JyroType.Null, JyroType.Number, JyroType.String, JyroType.Boolean, JyroType.Object, JyroType.Array], description: 'The value to find' }
         ],
         returnType: JyroType.Number,
-        description: 'Returns the index of the first occurrence of a value, or -1 if not found',
-        examples: ['IndexOf([1, 2, 3], 2) # Returns 1']
+        description: 'Returns the index of the first occurrence of a value in a string or array, or -1 if not found',
+        examples: ['IndexOf("Hello", "ell") # Returns 1', 'IndexOf([1, 2, 3], 2) # Returns 1']
     },
     {
         name: 'Insert',
@@ -345,45 +345,73 @@ export const STDLIB_FUNCTIONS: FunctionSignature[] = [
         name: 'RandomChoice',
         category: 'Array',
         parameters: [
-            { name: 'arr', type: JyroType.Array, description: 'The array to select a random element from (must not be empty)' }
+            { name: 'arr', type: JyroType.Array, description: 'The array to select a random element from' }
         ],
         returnType: [JyroType.Null, JyroType.Number, JyroType.String, JyroType.Boolean, JyroType.Object, JyroType.Array],
-        description: 'Selects a random element from an array using cryptographically secure randomization',
+        description: 'Selects a random element from an array, or returns null if empty',
         examples: ['RandomChoice(["red", "blue", "green"]) # Returns a random color']
     },
 
-    // ===== Math Functions (6) =====
+    // ===== Math Functions (9) =====
     {
         name: 'Min',
         category: 'Math',
         parameters: [
-            { name: 'a', type: JyroType.Number, description: 'First number' },
-            { name: 'b', type: JyroType.Number, description: 'Second number' }
+            { name: 'values', type: [JyroType.Number, JyroType.Array], description: 'Numbers to compare (variadic or single array)' }
         ],
-        returnType: JyroType.Number,
-        description: 'Returns the smaller of two numbers',
-        examples: ['Min(5, 10) # Returns 5']
+        returnType: [JyroType.Number, JyroType.Null],
+        description: 'Returns the minimum numeric value, or null if no numeric arguments provided',
+        examples: ['Min(5, 10, 3) # Returns 3', 'Min([5, 10, 3]) # Returns 3']
     },
     {
         name: 'Max',
         category: 'Math',
         parameters: [
-            { name: 'a', type: JyroType.Number, description: 'First number' },
-            { name: 'b', type: JyroType.Number, description: 'Second number' }
+            { name: 'values', type: [JyroType.Number, JyroType.Array], description: 'Numbers to compare (variadic or single array)' }
         ],
-        returnType: JyroType.Number,
-        description: 'Returns the larger of two numbers',
-        examples: ['Max(5, 10) # Returns 10']
+        returnType: [JyroType.Number, JyroType.Null],
+        description: 'Returns the maximum numeric value, or null if no numeric arguments provided',
+        examples: ['Max(5, 10, 3) # Returns 10', 'Max([5, 10, 3]) # Returns 10']
     },
     {
         name: 'Sum',
         category: 'Math',
         parameters: [
-            { name: 'values', type: JyroType.Number, description: 'Numbers to sum (variadic)' }
+            { name: 'values', type: [JyroType.Number, JyroType.Array], description: 'Numbers to sum (variadic or single array)' }
         ],
-        returnType: JyroType.Number,
-        description: 'Returns the sum of all provided numbers',
-        examples: ['Sum(1, 2, 3, 4) # Returns 10']
+        returnType: [JyroType.Number, JyroType.Null],
+        description: 'Returns the sum of all numeric values, or null if no numeric arguments provided',
+        examples: ['Sum(1, 2, 3, 4) # Returns 10', 'Sum([1, 2, 3, 4]) # Returns 10']
+    },
+    {
+        name: 'Average',
+        category: 'Math',
+        parameters: [
+            { name: 'values', type: [JyroType.Number, JyroType.Array], description: 'Numbers to average (variadic or single array)' }
+        ],
+        returnType: [JyroType.Number, JyroType.Null],
+        description: 'Returns the arithmetic mean of all numeric values, or null if no numeric arguments provided',
+        examples: ['Average(10, 20, 30) # Returns 20', 'Average([10, 20, 30]) # Returns 20']
+    },
+    {
+        name: 'Median',
+        category: 'Math',
+        parameters: [
+            { name: 'values', type: [JyroType.Number, JyroType.Array], description: 'Numbers to find median of (variadic or single array)' }
+        ],
+        returnType: [JyroType.Number, JyroType.Null],
+        description: 'Returns the median (middle value) of all numeric values, or null if no numeric arguments provided',
+        examples: ['Median(1, 3, 5) # Returns 3', 'Median([1, 3, 5, 7]) # Returns 4']
+    },
+    {
+        name: 'Mode',
+        category: 'Math',
+        parameters: [
+            { name: 'values', type: [JyroType.Number, JyroType.Array], description: 'Numbers to find mode of (variadic or single array)' }
+        ],
+        returnType: [JyroType.Number, JyroType.Null],
+        description: 'Returns the most frequently occurring value, or null if no numeric arguments provided',
+        examples: ['Mode(1, 2, 2, 3) # Returns 2', 'Mode([1, 2, 2, 3, 3, 3]) # Returns 3']
     },
     {
         name: 'Abs',
@@ -461,12 +489,12 @@ export const STDLIB_FUNCTIONS: FunctionSignature[] = [
         category: 'DateTime',
         parameters: [
             { name: 'date', type: JyroType.String, description: 'The date in ISO format' },
-            { name: 'unit', type: JyroType.String, description: 'Unit: days, weeks, months, years, hours, minutes, seconds' },
-            { name: 'amount', type: JyroType.Number, description: 'Amount to add (can be negative)' }
+            { name: 'amount', type: JyroType.Number, description: 'Amount to add (can be negative)' },
+            { name: 'unit', type: JyroType.String, description: 'Unit: days, weeks, months, years, hours, minutes, seconds' }
         ],
         returnType: JyroType.String,
         description: 'Adds a time interval to a date',
-        examples: ['DateAdd(Today(), "days", 7) # Adds 7 days']
+        examples: ['DateAdd(Today(), 7, "days") # Adds 7 days']
     },
     {
         name: 'DateDiff',
