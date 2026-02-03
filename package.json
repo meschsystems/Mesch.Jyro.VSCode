@@ -2,7 +2,7 @@
   "name": "jyro-vscode",
   "displayName": "Jyro",
   "description": "Full language server support for the Jyro scripting language",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "publisher": "meschsystems",
   "license": "MIT",
   "repository": {
@@ -45,7 +45,9 @@
       {
         "scopeName": "markdown.jyro.codeblock",
         "path": "./syntaxes/jyro.tmLanguage.json",
-        "injectTo": ["text.html.markdown"],
+        "injectTo": [
+          "text.html.markdown"
+        ],
         "embeddedLanguages": {
           "meta.embedded.block.jyro": "jyro"
         }
