@@ -262,5 +262,61 @@
       "fail \"${1:error message}\""
     ],
     "description": "Fail script execution with an error message"
+  },
+  "Any": {
+    "prefix": "any",
+    "body": [
+      "Any(${1:array}, \"${2:field}\", \"${3|==,!=,<,>,<=,>=|}\", ${4:value})"
+    ],
+    "description": "Check if any element matches condition"
+  },
+  "All": {
+    "prefix": "all",
+    "body": [
+      "All(${1:array}, \"${2:field}\", \"${3|==,!=,<,>,<=,>=|}\", ${4:value})"
+    ],
+    "description": "Check if all elements match condition"
+  },
+  "Find": {
+    "prefix": "find",
+    "body": [
+      "Find(${1:array}, \"${2:field}\", \"${3|==,!=,<,>,<=,>=|}\", ${4:value})"
+    ],
+    "description": "Find first matching element"
+  },
+  "Merge Objects": {
+    "prefix": "merge",
+    "body": [
+      "Merge(${1:object1}, ${2:object2})"
+    ],
+    "description": "Merge objects (later overrides earlier)"
+  },
+  "Regex Match": {
+    "prefix": "regexmatch",
+    "body": [
+      "RegexMatch(${1:text}, \"${2:pattern}\")"
+    ],
+    "description": "Extract first regex match as string"
+  },
+  "Regex Match All": {
+    "prefix": "regexmatchall",
+    "body": [
+      "RegexMatchAll(${1:text}, \"${2:pattern}\")"
+    ],
+    "description": "Extract all regex matches as array"
+  },
+  "Regex Test": {
+    "prefix": "regextest",
+    "body": [
+      "RegexTest(${1:text}, \"${2:pattern}\")"
+    ],
+    "description": "Test if pattern matches text"
+  },
+  "Regex Match Detail": {
+    "prefix": "regexmatchdetail",
+    "body": [
+      "RegexMatchDetail(${1:text}, \"${2:pattern}\")"
+    ],
+    "description": "Extract first match with metadata (index, groups)"
   }
 }

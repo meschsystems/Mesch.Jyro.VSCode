@@ -1,6 +1,6 @@
 /**
  * Jyro Standard Library Function Registry
- * Contains all 57 built-in functions with their signatures and documentation
+ * Contains all 75 built-in functions with their signatures and documentation
  */
 
 import { JyroType } from './types';
@@ -145,7 +145,7 @@ export const STDLIB_FUNCTIONS: FunctionSignature[] = [
         examples: ['RandomString(8) # Returns "aB3xK9mP"', 'RandomString(6, "0123456789") # Returns "483921"']
     },
 
-    // ===== Array Functions (20) =====
+    // ===== Array Functions (23) =====
     {
         name: 'Length',
         category: 'Array',
@@ -276,6 +276,45 @@ export const STDLIB_FUNCTIONS: FunctionSignature[] = [
         returnType: JyroType.Number,
         description: 'Counts array elements that match a field condition',
         examples: ['CountIf(Data.users, "active", "==", true) # Returns count of active users']
+    },
+    {
+        name: 'Any',
+        category: 'Array',
+        parameters: [
+            { name: 'arr', type: JyroType.Array, description: 'The array to search' },
+            { name: 'field', type: JyroType.String, description: 'Field name or nested path (e.g., "address.city")' },
+            { name: 'operator', type: JyroType.String, description: 'Comparison operator (==, !=, <, <=, >, >=)' },
+            { name: 'value', type: [JyroType.Null, JyroType.Number, JyroType.String, JyroType.Boolean], description: 'The value to compare against' }
+        ],
+        returnType: JyroType.Boolean,
+        description: 'Returns true if ANY element matches the condition. Short-circuits on first match. Returns false for empty arrays.',
+        examples: ['Any(Data.users, "role", "==", "admin") # Returns true if any user is admin']
+    },
+    {
+        name: 'All',
+        category: 'Array',
+        parameters: [
+            { name: 'arr', type: JyroType.Array, description: 'The array to check' },
+            { name: 'field', type: JyroType.String, description: 'Field name or nested path (e.g., "address.city")' },
+            { name: 'operator', type: JyroType.String, description: 'Comparison operator (==, !=, <, <=, >, >=)' },
+            { name: 'value', type: [JyroType.Null, JyroType.Number, JyroType.String, JyroType.Boolean], description: 'The value to compare against' }
+        ],
+        returnType: JyroType.Boolean,
+        description: 'Returns true if ALL elements match the condition. Short-circuits on first non-match. Returns true for empty arrays (vacuous truth).',
+        examples: ['All(Data.users, "verified", "==", true) # Returns true if all users are verified']
+    },
+    {
+        name: 'Find',
+        category: 'Array',
+        parameters: [
+            { name: 'arr', type: JyroType.Array, description: 'The array to search' },
+            { name: 'field', type: JyroType.String, description: 'Field name or nested path (e.g., "address.city")' },
+            { name: 'operator', type: JyroType.String, description: 'Comparison operator (==, !=, <, <=, >, >=)' },
+            { name: 'value', type: [JyroType.Null, JyroType.Number, JyroType.String, JyroType.Boolean], description: 'The value to compare against' }
+        ],
+        returnType: [JyroType.Null, JyroType.Number, JyroType.String, JyroType.Boolean, JyroType.Object, JyroType.Array],
+        description: 'Returns the first element matching the condition, or null if no match. More efficient than First(Filter(...)).',
+        examples: ['Find(Data.users, "id", "==", 123) # Returns the user with id 123']
     },
     {
         name: 'Sort',
@@ -520,7 +559,7 @@ export const STDLIB_FUNCTIONS: FunctionSignature[] = [
         examples: ['DatePart(Now(), "year") # Returns 2025']
     },
 
-    // ===== Utility Functions (11) =====
+    // ===== Utility Functions (12) =====
     {
         name: 'TypeOf',
         category: 'Utility',
@@ -623,6 +662,16 @@ export const STDLIB_FUNCTIONS: FunctionSignature[] = [
         examples: ['Keys({"name": "Alice", "age": 30}) # Returns ["name", "age"]']
     },
     {
+        name: 'Merge',
+        category: 'Utility',
+        parameters: [
+            { name: 'objects', type: JyroType.Object, description: 'Objects to merge (variadic, 0-10 arguments)' }
+        ],
+        returnType: JyroType.Object,
+        description: 'Merges multiple objects into a new object. Later arguments override earlier ones (shallow merge). Non-object arguments are silently skipped.',
+        examples: ['Merge({"a": 1}, {"b": 2}) # Returns {"a": 1, "b": 2}', 'Merge(defaults, userConfig) # Override defaults with user config']
+    },
+    {
         name: 'InvokeRestMethod',
         category: 'Utility',
         parameters: [
@@ -634,6 +683,52 @@ export const STDLIB_FUNCTIONS: FunctionSignature[] = [
         returnType: JyroType.Object,
         description: 'Executes HTTP REST API calls. Returns object with statusCode, isSuccessStatusCode, content, headers. Must be enabled via .WithRestApi()',
         examples: ['InvokeRestMethod("https://api.example.com/users", "GET")', 'InvokeRestMethod("https://api.example.com/users", "POST", {"Content-Type": "application/json"}, newUser)']
+    },
+
+    // ===== Regex Functions (4) =====
+    {
+        name: 'RegexMatch',
+        category: 'Regex',
+        parameters: [
+            { name: 'text', type: JyroType.String, description: 'The source text to search' },
+            { name: 'pattern', type: JyroType.String, description: 'The regex pattern to match' }
+        ],
+        returnType: [JyroType.String, JyroType.Null],
+        description: 'Extracts the first regex match as a string, or null if no match',
+        examples: ['RegexMatch("Hello World", "W\\\\w+") # Returns "World"']
+    },
+    {
+        name: 'RegexMatchAll',
+        category: 'Regex',
+        parameters: [
+            { name: 'text', type: JyroType.String, description: 'The source text to search' },
+            { name: 'pattern', type: JyroType.String, description: 'The regex pattern to match' }
+        ],
+        returnType: JyroType.Array,
+        description: 'Extracts all regex matches as an array of strings. Returns empty array if no matches.',
+        examples: ['RegexMatchAll("cat bat rat", "\\\\w+at") # Returns ["cat", "bat", "rat"]']
+    },
+    {
+        name: 'RegexTest',
+        category: 'Regex',
+        parameters: [
+            { name: 'text', type: JyroType.String, description: 'The source text to search' },
+            { name: 'pattern', type: JyroType.String, description: 'The regex pattern to match' }
+        ],
+        returnType: JyroType.Boolean,
+        description: 'Tests if the pattern matches anywhere in the text',
+        examples: ['RegexTest("hello@example.com", "\\\\w+@\\\\w+\\\\.\\\\w+") # Returns true']
+    },
+    {
+        name: 'RegexMatchDetail',
+        category: 'Regex',
+        parameters: [
+            { name: 'text', type: JyroType.String, description: 'The source text to search' },
+            { name: 'pattern', type: JyroType.String, description: 'The regex pattern to match' }
+        ],
+        returnType: [JyroType.Object, JyroType.Null],
+        description: 'Extracts the first match with metadata (match, index, groups), or null if no match',
+        examples: ['RegexMatchDetail("john@example.com", "(\\\\w+)@(\\\\w+)\\\\.(\\\\w+)") # Returns { match: "john@example.com", index: 0, groups: ["john", "example", "com"] }']
     }
 ];
 
@@ -661,4 +756,4 @@ export function getFunctionsByCategory(category: string): FunctionSignature[] {
 /**
  * All function categories
  */
-export const FUNCTION_CATEGORIES = ['String', 'Array', 'Math', 'DateTime', 'Utility'];
+export const FUNCTION_CATEGORIES = ['String', 'Array', 'Math', 'DateTime', 'Utility', 'Regex'];
