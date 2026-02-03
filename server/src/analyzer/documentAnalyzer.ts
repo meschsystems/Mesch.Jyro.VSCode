@@ -84,11 +84,10 @@ export class DocumentAnalyzer {
 
             // Remove comments and string literals for keyword detection to avoid false positives
             const withoutComments = trimmed.replace(/#.*$/, '');
-            const trimmedWithoutStrings = withoutComments.replace(/"[^"]*"/g, '""');
+            const trimmedWithoutStrings = this.removeStringLiterals(withoutComments);
 
-            // Check for unclosed strings
-            const stringMatches = line.match(/"/g);
-            if (stringMatches && stringMatches.length % 2 !== 0) {
+            // Check for unclosed strings (properly handling escaped quotes)
+            if (!this.hasBalancedStrings(line)) {
                 this.addDiagnostic(
                     lineIndex, 0, lineIndex, line.length,
                     'Unclosed string literal',
@@ -280,7 +279,7 @@ export class DocumentAnalyzer {
 
             // Remove string literals from the line before checking for variables
             // This prevents false positives for identifiers inside strings like "orderId"
-            const lineWithoutStrings = line.replace(/"[^"]*"/g, '""');
+            const lineWithoutStrings = this.removeStringLiterals(line);
 
             // Remove inline comments (everything after # when not in a string)
             const lineWithoutComments = lineWithoutStrings.replace(/#.*$/, '');
@@ -324,6 +323,73 @@ export class DocumentAnalyzer {
                 }
             }
         });
+    }
+
+    /**
+     * Check if a line has balanced string literals (properly handling escaped quotes)
+     */
+    private hasBalancedStrings(line: string): boolean {
+        let inString = false;
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (char === '"') {
+                // Check if this quote is escaped
+                let backslashCount = 0;
+                let j = i - 1;
+                while (j >= 0 && line[j] === '\\') {
+                    backslashCount++;
+                    j--;
+                }
+                // Quote is escaped only if preceded by an odd number of backslashes
+                if (backslashCount % 2 === 0) {
+                    inString = !inString;
+                }
+            }
+        }
+        return !inString;
+    }
+
+    /**
+     * Remove string literals from a line (properly handling escaped quotes)
+     * Replaces each string with "" to preserve structure for pattern matching
+     */
+    private removeStringLiterals(line: string): string {
+        let result = '';
+        let inString = false;
+        let stringStart = -1;
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (char === '"') {
+                // Check if this quote is escaped
+                let backslashCount = 0;
+                let j = i - 1;
+                while (j >= 0 && line[j] === '\\') {
+                    backslashCount++;
+                    j--;
+                }
+                // Quote is escaped only if preceded by an odd number of backslashes
+                if (backslashCount % 2 === 0) {
+                    if (!inString) {
+                        inString = true;
+                        stringStart = i;
+                    } else {
+                        // End of string - replace content with empty string
+                        result += '""';
+                        inString = false;
+                    }
+                }
+            } else if (!inString) {
+                result += char;
+            }
+        }
+
+        // If we're still in a string at the end, include remaining content
+        if (inString) {
+            result += line.substring(stringStart);
+        }
+
+        return result;
     }
 
     /**
