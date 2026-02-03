@@ -44,7 +44,7 @@
       },
       {
         "scopeName": "markdown.jyro.codeblock",
-        "path": "./syntaxes/jyro.tmLanguage.json",
+        "path": "./syntaxes/jyro.markdown.tmLanguage.json",
         "injectTo": [
           "text.html.markdown"
         ],
