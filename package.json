@@ -41,6 +41,14 @@
         "language": "jyro",
         "scopeName": "source.jyro",
         "path": "./syntaxes/jyro.tmLanguage.json"
+      },
+      {
+        "scopeName": "markdown.jyro.codeblock",
+        "path": "./syntaxes/jyro.tmLanguage.json",
+        "injectTo": ["text.html.markdown"],
+        "embeddedLanguages": {
+          "meta.embedded.block.jyro": "jyro"
+        }
       }
     ],
     "snippets": [
